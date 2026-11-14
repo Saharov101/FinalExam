@@ -1,0 +1,26 @@
+@startuml
+actor Customer
+participant Main
+participant ShoppingCart
+participant DiscountStrategy
+participant DeliveryService
+participant PaymentCreator
+participant Inventory
+participant LowStockAlert
+
+Customer -> Main : checkout
+Main -> Inventory : isAvailable(sku, qty)
+Main -> ShoppingCart : calculateTotal()
+ShoppingCart -> DiscountStrategy : calculateDiscount(subtotal)
+DiscountStrategy --> ShoppingCart : discount
+ShoppingCart --> Main : PriceBreakdown
+Main -> DeliveryService : calculateCost(city, parcels)
+Main -> PaymentCreator : processPayment(total)
+PaymentCreator -> PaymentCreator : createPayment()
+PaymentCreator --> Main : transactionId
+Main -> Inventory : reserve(sku, qty)
+Inventory -> LowStockAlert : onStockChanged(...)
+Inventory -> ShoppingCart : onStockChanged(...)
+Main -> DeliveryService : ship(city, address, parcels)
+DeliveryService --> Main : tracking number
+@enduml

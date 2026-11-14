@@ -1,0 +1,175 @@
+@startuml
+skinparam classAttributeIconSize 0
+skinparam packageStyle rectangle
+hide empty members
+
+package builder {
+  class Product {
+    -sku: String
+    -name: String
+    -category: String
+    -specifications: Map
+    -price: BigDecimal
+    +changePrice(BigDecimal)
+  }
+  abstract class "ProductBuilder<B>" as ProductBuilder {
+    +sku(String): B
+    +name(String): B
+    +basePrice(String): B
+    +color(String): B
+    +storage(int): B
+    +build(): Product
+    #option(key, value, cost): B
+    #{abstract} category(): String
+    #{abstract} storageCost(int): BigDecimal
+  }
+  class LaptopBuilder {
+    +processor(String)
+    +ram(int)
+    +gpu(String)
+  }
+  class SmartphoneBuilder {
+    +camera(int)
+    +dualSim()
+  }
+  class ProductDirector {
+    +constructGamingLaptop(LaptopBuilder): Product
+    +constructOfficeLaptop(LaptopBuilder): Product
+    +constructFlagshipPhone(SmartphoneBuilder): Product
+  }
+  ProductBuilder <|-- LaptopBuilder
+  ProductBuilder <|-- SmartphoneBuilder
+  ProductBuilder ..> Product : creates
+  ProductDirector ..> ProductBuilder : uses
+}
+
+package factory {
+  interface Payment {
+    +methodName(): String
+    +pay(BigDecimal)
+  }
+  class CreditCardPayment
+  class PayPalPayment
+  class CryptoPayment
+  abstract class PaymentCreator {
+    #{abstract} createPayment(): Payment
+    +processPayment(BigDecimal): String
+  }
+  class CreditCardPaymentCreator
+  class PayPalPaymentCreator
+  class CryptoPaymentCreator
+  Payment <|.. CreditCardPayment
+  Payment <|.. PayPalPayment
+  Payment <|.. CryptoPayment
+  PaymentCreator <|-- CreditCardPaymentCreator
+  PaymentCreator <|-- PayPalPaymentCreator
+  PaymentCreator <|-- CryptoPaymentCreator
+  PaymentCreator ..> Payment : creates
+}
+
+package decorator {
+  interface CartItem {
+    +getProduct(): Product
+    +getQuantity(): int
+    +getPrice(): BigDecimal
+    +getDescription(): String
+  }
+  class BasicCartItem
+  abstract class CartItemDecorator {
+    -wrapped: CartItem
+    #{abstract} extraCost(): BigDecimal
+    #{abstract} extraDescription(): String
+  }
+  class GiftWrapDecorator
+  class ExtendedWarrantyDecorator
+  class InsuranceDecorator
+  CartItem <|.. BasicCartItem
+  CartItem <|.. CartItemDecorator
+  CartItemDecorator o-- CartItem : wraps
+  CartItemDecorator <|-- GiftWrapDecorator
+  CartItemDecorator <|-- ExtendedWarrantyDecorator
+  CartItemDecorator <|-- InsuranceDecorator
+}
+
+package adapter {
+  interface DeliveryService {
+    +carrierName(): String
+    +calculateCost(city, parcels): BigDecimal
+    +ship(city, address, parcels): String
+  }
+  class DhlExpressApi {
+    +getRateEur(String, double): double
+    +bookShipment(String, double): String
+  }
+  class KazPostApi {
+    +tariffInTenge(String, int): long
+    +registerParcel(String, String, int): long
+  }
+  class DhlDeliveryAdapter
+  class KazPostDeliveryAdapter
+  DeliveryService <|.. DhlDeliveryAdapter
+  DeliveryService <|.. KazPostDeliveryAdapter
+  DhlDeliveryAdapter o-- DhlExpressApi
+  KazPostDeliveryAdapter o-- KazPostApi
+}
+
+package observer {
+  interface InventorySubject {
+    +attach(InventoryObserver)
+    +detach(InventoryObserver)
+  }
+  class Inventory {
+    +addProduct(Product, int)
+    +updatePrice(String, BigDecimal)
+    +restock(String, int)
+    +reserve(String, int)
+  }
+  interface InventoryObserver {
+    +onPriceChanged(Product, old, new)
+    +onStockChanged(Product, old, new)
+  }
+  class CustomerNotifier
+  class LowStockAlert
+  InventorySubject <|.. Inventory
+  Inventory o-- "*" InventoryObserver
+  InventoryObserver <|.. CustomerNotifier
+  InventoryObserver <|.. LowStockAlert
+}
+
+package strategy {
+  interface DiscountStrategy {
+    +calculateDiscount(BigDecimal): BigDecimal
+    +description(): String
+  }
+  class NoDiscount
+  class PercentageDiscount
+  class FixedAmountDiscount
+  class TieredDiscount
+  class ShoppingCart {
+    -items: List<CartItem>
+    -discountStrategy: DiscountStrategy
+    +setDiscountStrategy(DiscountStrategy)
+    +addItem(CartItem)
+    +calculateTotal(): PriceBreakdown
+  }
+  class PriceBreakdown <<record>>
+  DiscountStrategy <|.. NoDiscount
+  DiscountStrategy <|.. PercentageDiscount
+  DiscountStrategy <|.. FixedAmountDiscount
+  DiscountStrategy <|.. TieredDiscount
+  ShoppingCart o-- DiscountStrategy
+  ShoppingCart ..> PriceBreakdown
+}
+
+class Main
+
+InventoryObserver <|.. ShoppingCart
+ShoppingCart o-- "*" CartItem
+BasicCartItem --> Product
+Inventory o-- "*" Product
+Main ..> ProductDirector
+Main ..> Inventory
+Main ..> ShoppingCart
+Main ..> PaymentCreator
+Main ..> DeliveryService
+@enduml
