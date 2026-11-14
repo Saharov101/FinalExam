@@ -1,0 +1,25 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide empty members
+class Main <<client>>
+interface DeliveryService <<target>> {
+  +carrierName(): String
+  +calculateCost(city, parcels): BigDecimal
+  +ship(city, address, parcels): String
+}
+class DhlDeliveryAdapter <<adapter>>
+class KazPostDeliveryAdapter <<adapter>>
+class DhlExpressApi <<adaptee>> {
+  +getRateEur(String, double): double
+  +bookShipment(String, double): String
+}
+class KazPostApi <<adaptee>> {
+  +tariffInTenge(String, int): long
+  +registerParcel(String, String, int): long
+}
+Main ..> DeliveryService
+DeliveryService <|.. DhlDeliveryAdapter
+DeliveryService <|.. KazPostDeliveryAdapter
+DhlDeliveryAdapter o-- DhlExpressApi
+KazPostDeliveryAdapter o-- KazPostApi
+@enduml

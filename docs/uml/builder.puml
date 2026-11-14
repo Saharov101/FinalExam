@@ -1,0 +1,42 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide empty members
+class Product {
+  -sku: String
+  -name: String
+  -category: String
+  -specifications: Map<String,String>
+  -price: BigDecimal
+  +changePrice(BigDecimal)
+}
+abstract class "ProductBuilder<B>" as PB {
+  +sku(String): B
+  +name(String): B
+  +basePrice(String): B
+  +color(String): B
+  +storage(int): B
+  +build(): Product
+  #option(key, value, cost): B
+  #{abstract} category(): String
+  #{abstract} storageCost(int): BigDecimal
+  #{abstract} self(): B
+}
+class LaptopBuilder {
+  +processor(String)
+  +ram(int)
+  +gpu(String)
+}
+class SmartphoneBuilder {
+  +camera(int)
+  +dualSim()
+}
+class ProductDirector {
+  +constructGamingLaptop(LaptopBuilder): Product
+  +constructOfficeLaptop(LaptopBuilder): Product
+  +constructFlagshipPhone(SmartphoneBuilder): Product
+}
+PB <|-- LaptopBuilder
+PB <|-- SmartphoneBuilder
+PB ..> Product : builds
+ProductDirector ..> PB : directs
+@enduml

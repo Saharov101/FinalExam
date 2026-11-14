@@ -3,7 +3,7 @@
 **Course:** Software Design Patterns
 **Team:** Shalabay Madi, Mustafin Azamat, Batyushkin Maxim
 **Language:** Java 17+
-**Repository:** _<insert GitHub link>_
+**Repository:** https://github.com/Saharov101/FinalExam
 
 ---
 
@@ -47,7 +47,7 @@ src/
 └── strategy/  strategies/ context/
 ```
 
-_Insert the rendered class diagram here (`docs/uml/class-diagram.puml`)._
+![Class diagram](uml/class-diagram.png)
 
 ### 2.2 Builder (Shalabay Madi)
 
@@ -126,7 +126,7 @@ interface has default methods, so each observer implements only the events it ne
 
 ### 2.8 Interaction between patterns
 
-_Insert the rendered sequence diagram here (`docs/uml/checkout-sequence.puml`)._
+![Checkout sequence diagram](uml/checkout-sequence.png)
 
 1. Builder products are registered in the Observer subject `Inventory`.
 2. Decorator `CartItem`s wrap Builder products and are stored in the Strategy context `ShoppingCart`.
@@ -149,7 +149,12 @@ _Insert the rendered sequence diagram here (`docs/uml/checkout-sequence.puml`)._
 
 ### 2.10 Screenshots
 
-_Insert screenshots of `java -cp out Main` output for each section (1–9)._
+![Output part 1](screenshots/output-part1.png)
+![Output part 2](screenshots/output-part2.png)
+![Output part 3](screenshots/output-part3.png)
+![Output part 4](screenshots/output-part4.png)
+
+The full report with code listings is in `docs/Final_Project_Report.pdf`.
 
 ## 3. Conclusion
 

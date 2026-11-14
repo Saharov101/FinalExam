@@ -1,0 +1,38 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide empty members
+class ShoppingCart <<context>> {
+  -items: List<CartItem>
+  -taxRate: BigDecimal
+  -discountStrategy: DiscountStrategy
+  +setDiscountStrategy(DiscountStrategy)
+  +addItem(CartItem)
+  +removeItem(String)
+  +calculateTotal(): PriceBreakdown
+}
+class PriceBreakdown <<record>> {
+  subtotal, discount, tax, total
+}
+interface DiscountStrategy {
+  +calculateDiscount(BigDecimal): BigDecimal
+  +description(): String
+}
+class NoDiscount
+class PercentageDiscount {
+  -percent: int
+}
+class FixedAmountDiscount {
+  -amount: BigDecimal
+  -minimumSubtotal: BigDecimal
+}
+class TieredDiscount {
+  -percentByThreshold: NavigableMap
+}
+ShoppingCart o-- DiscountStrategy
+ShoppingCart ..> PriceBreakdown
+DiscountStrategy <|.. NoDiscount
+DiscountStrategy <|.. PercentageDiscount
+DiscountStrategy <|.. FixedAmountDiscount
+DiscountStrategy <|.. TieredDiscount
+TieredDiscount ..> PercentageDiscount : reuses
+@enduml

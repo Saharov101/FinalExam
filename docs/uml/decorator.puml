@@ -1,0 +1,31 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide empty members
+interface CartItem {
+  +getProduct(): Product
+  +getQuantity(): int
+  +getPrice(): BigDecimal
+  +getDescription(): String
+}
+class BasicCartItem {
+  -product: Product
+  -quantity: int
+}
+abstract class CartItemDecorator {
+  -wrapped: CartItem
+  #wrappedPrice(): BigDecimal
+  #{abstract} extraCost(): BigDecimal
+  #{abstract} extraDescription(): String
+}
+class GiftWrapDecorator
+class ExtendedWarrantyDecorator {
+  -years: int
+}
+class InsuranceDecorator
+CartItem <|.. BasicCartItem
+CartItem <|.. CartItemDecorator
+CartItemDecorator o-- CartItem : wraps
+CartItemDecorator <|-- GiftWrapDecorator
+CartItemDecorator <|-- ExtendedWarrantyDecorator
+CartItemDecorator <|-- InsuranceDecorator
+@enduml

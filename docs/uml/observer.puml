@@ -1,0 +1,34 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide empty members
+interface InventorySubject {
+  +attach(InventoryObserver)
+  +detach(InventoryObserver)
+}
+class Inventory {
+  -products: Map<String, Product>
+  -stock: Map<String, Integer>
+  -observers: List<InventoryObserver>
+  +addProduct(Product, int)
+  +updatePrice(String, BigDecimal)
+  +restock(String, int)
+  +reserve(String, int)
+}
+interface InventoryObserver {
+  +onPriceChanged(Product, old, new)
+  +onStockChanged(Product, old, new)
+}
+class CustomerNotifier {
+  -wishlist: Set<String>
+  +watch(String)
+}
+class LowStockAlert {
+  -threshold: int
+}
+class ShoppingCart
+InventorySubject <|.. Inventory
+Inventory o-- "*" InventoryObserver : notifies
+InventoryObserver <|.. CustomerNotifier
+InventoryObserver <|.. LowStockAlert
+InventoryObserver <|.. ShoppingCart
+@enduml

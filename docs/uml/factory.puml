@@ -1,0 +1,28 @@
+@startuml
+skinparam classAttributeIconSize 0
+hide empty members
+interface Payment {
+  +methodName(): String
+  +pay(BigDecimal)
+}
+class CreditCardPayment
+class PayPalPayment
+class CryptoPayment
+abstract class PaymentCreator {
+  #{abstract} createPayment(): Payment
+  +processPayment(BigDecimal): String
+}
+class CreditCardPaymentCreator
+class PayPalPaymentCreator
+class CryptoPaymentCreator
+Payment <|.. CreditCardPayment
+Payment <|.. PayPalPayment
+Payment <|.. CryptoPayment
+PaymentCreator <|-- CreditCardPaymentCreator
+PaymentCreator <|-- PayPalPaymentCreator
+PaymentCreator <|-- CryptoPaymentCreator
+PaymentCreator ..> Payment : creates
+CreditCardPaymentCreator ..> CreditCardPayment
+PayPalPaymentCreator ..> PayPalPayment
+CryptoPaymentCreator ..> CryptoPayment
+@enduml
